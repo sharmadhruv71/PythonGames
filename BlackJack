@@ -1,4 +1,5 @@
 # Mini-project #6 - Blackjack
+//BlackJack Game written in Python
 
 import simplegui
 import random
