@@ -1,0 +1,66 @@
+# implementation of card game - Memory
+
+import simplegui
+import random
+
+
+
+# helper function to initialize globals
+def new_game():
+    global deck, state, exposed, turns, selected_card1, selected_card2
+    deck = range(8)*2
+    exposed = [False]*16
+    state = 0    
+    turns = 0
+    random.shuffle(deck)
+          
+
+def mouseclick(pos):
+    global turns, selected_card1, selected_card2,state
+    click_index = pos[0] / 50
+    
+    if not exposed[click_index]:  
+        #Start of the game
+        if state == 0:
+            state = 1
+            selected_card1 = click_index          
+      
+        elif state == 1:
+            state = 2
+            selected_card2 = click_index
+            turns += 1
+        
+        else:
+            if deck[selected_card1] != deck[selected_card2]:
+                exposed[selected_card1] = False
+                exposed[selected_card2] = False
+            selected_card1 = click_index
+            state = 1
+        
+        exposed[click_index] = True
+        
+                            
+def draw(canvas):
+    for n in range(16):
+        if exposed[n]:            
+            canvas.draw_polygon([(n*50,0),(n*50,100),((n+1)*50,100),((n+1)*50,0)], 1, 'Orange', 'White')
+            canvas.draw_text(str(deck[n]), (n*50+15 ,60), 30, 'Black')
+        else:            
+            canvas.draw_polygon([(n*50,0),(n*50,100),((n+1)*50,100),((n+1)*50,0)], 1, 'Orange', 'Green')
+    label.set_text("Turns = " + str(turns))
+    
+
+frame = simplegui.create_frame("Memory", 800, 100)
+frame.add_button("Reset", new_game)
+label = frame.add_label("Turns = 0")
+
+# register event handlers
+frame.set_mouseclick_handler(mouseclick)
+frame.set_draw_handler(draw)
+
+# get things rolling
+new_game()
+frame.start()
+
+
+# Always remember to review the grading rubric
