@@ -1,0 +1,61 @@
+
+import simplegui
+
+time = 0
+numSuccess = 0
+numTotal = 0
+firstStop = True
+
+def format(time):
+    return str(time/600) + ":" + str(time%600/100) + str(time%600%100/10) + "." + str(time%600%100%10)    
+    pass
+    
+def timer_handler():
+    global time
+    time = time + 1
+   
+   
+timer = simplegui.create_timer(100 , timer_handler)
+
+#Start button event handler
+def start_timer():
+    global firstStop
+    firstStop = True
+    timer.start()
+
+#Stop Button event handler    
+def stop_timer():
+    global numTotal , numSuccess , firstStop
+    if firstStop:        
+        numTotal = numTotal + 1        
+        if time % 600 % 100 % 10 == 0:
+            numSuccess = numSuccess + 1
+    firstStop = False        
+    timer.stop()
+
+#Reset button event handler    
+def reset_timer():
+    global time, numTotal, numSuccess
+    timer.stop()
+    numTotal = numSuccess = 0
+    time = 0  
+
+# define draw handler
+def draw_handler(canvas):
+    canvas.draw_text(str(format(time)) , (130,100) , 30 , 'white')
+    canvas.draw_text("Score = " + str(numSuccess) + 
+                     "/" + str(numTotal) , (200,20) , 20 , 
+                     'white')
+    
+# create frame
+frame = simplegui.create_frame('StopWatch' , 300 , 200)
+frame.set_draw_handler(draw_handler)
+
+frame.add_button('Start' , start_timer , 100)
+frame.add_button('Stop' , stop_timer , 100)
+frame.add_button('Reset' , reset_timer , 100)
+
+
+frame.start()
+
+
